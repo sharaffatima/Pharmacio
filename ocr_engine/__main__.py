@@ -1,4 +1,4 @@
-"""Run: python -m ocr_engine (from pharmacio-ai directory, PYTHONPATH=. or pip install -e .)."""
+"""Run: python run.py or python -m ocr_engine (from pharmacio-ai directory, PYTHONPATH=. or pip install -e .)."""
 
 import os
 
