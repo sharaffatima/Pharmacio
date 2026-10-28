@@ -1,0 +1,22 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "*"
+djangorestframework = "*"
+psycopg2-binary = "*"
+python-dotenv = "*"
+djangorestframework-simplejwt = "*"
+celery = "*"
+redis = "*"
+requests = ">=2.31"
+boto3 = "*"
+django-storages = "*"
+openpyxl = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"
