@@ -1,51 +1,86 @@
 # Pharmacio
 
-**A smart pharmacy management system** for inventory, point of sale, purchasing workflows, and document processing—with web and mobile clients backed by a Django API and AI/OCR services.
+**A smart pharmacy management system for the day-to-day work of a pharmacy.**
 
-## What it does
+Pharmacio brings inventory, supplier offers, purchasing, point of sale, and document processing into one platform. Pharmacy teams can keep track of medicine stock, spot low-stock items, compare supplier offers, prepare purchase proposals, and record sales from web and mobile applications. The interface supports Arabic and English.
 
-- Manages pharmacy inventory, stock alerts, and point-of-sale transactions.
-- Supports purchase proposals and approval workflows.
-- Provides web and mobile Flutter applications.
-- Accepts pharmacy documents for asynchronous OCR processing and backend callbacks.
-- Uses role-based access controls and audit logging.
+## What Pharmacio helps with
 
-## Architecture
+- **Inventory management:** Track medicines and quantities, update stock, and surface low-stock alerts.
+- **Supplier offers:** Upload offer documents, review extracted line items, and compare offers to find suitable prices.
+- **Purchasing workflow:** Create purchase proposals from selected items and follow their approval status.
+- **Point of sale:** Record transactions, issue receipts, and handle refunds.
+- **Document processing:** Send PDF and image uploads through an asynchronous OCR workflow to extract structured offer data.
+- **Pharmacy operations:** Use role-based access, notifications, and audit records to support controlled day-to-day work.
 
-```text
-Flutter Web ─┐
-             ├── Django REST API ── OCR/AI service
-Flutter Mobile┘
-```
+## How it works
 
-The backend handles application data and workflows. It dispatches document-processing jobs to an OCR service and receives the results asynchronously. The two AI/OCR repositories below are kept as separate implementations; they are not both required to run the application. See the backend and service READMEs for configuration and integration details.
+1. A pharmacy team uploads an offer as a PDF or image, or imports an opening inventory balance from a spreadsheet.
+2. The backend stores the file and routes supported offer documents to the configured OCR service as a background job, so processing does not block the main application.
+3. The OCR service fetches the document, converts PDF pages to images, detects table regions, and extracts Arabic or English text into structured rows.
+4. The service sends its results back to the backend. Staff can review offers, compare their items, and prepare purchase proposals.
+5. Inventory alerts, proposal statuses, sales, receipts, and refunds are managed through the pharmacy application.
 
-## Repository layout
+## Screenshots
 
-| Component | Purpose | Source repository | Imported branch |
-|---|---|---|---|
-| [`backend/`](./backend/) | Django REST API, inventory, POS, purchasing, and access control | [pharmacio-backend](https://github.com/sharaffatima/pharmacio-backend) | `main` |
-| [`mobile/`](./mobile/) | Flutter mobile client | [pharmacio-mobile](https://github.com/sharaffatima/pharmacio-mobile) | `dev` |
-| [`web/`](./web/) | Flutter web client | [pharmacio-web](https://github.com/sharaffatima/pharmacio-web) | `main` |
-| [`services/ocr/`](./services/ocr/) | FastAPI OCR service | [sharafAI-pharmacio-ocr](https://github.com/sharaffatima/sharafAI-pharmacio-ocr) | `main` |
-| [`services/ai/`](./services/ai/) | AI/OCR service | [pharmacio-ai](https://github.com/sharaffatima/pharmacio-ai) | `main` |
-
-## Getting started
-
-Each component has its own dependencies and setup. Start with its README:
-
-- [Backend setup](./backend/README.md) — Django, PostgreSQL, Redis, and Docker/local development instructions.
-- [Mobile setup](./mobile/README.md) — Flutter and FVM instructions.
-- [Web setup](./web/README.md) — Flutter web instructions.
-- [OCR service setup](./services/ocr/README.md)
-- [AI service setup](./services/ai/README.md)
-
-There is not yet a root-level command that configures and starts the complete system. Configure the backend and the selected OCR service to use matching credentials and service URLs as described in their documentation. Local `.env` files are ignored; use the documented example files and provide your own values.
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/dashboard.png" alt="Pharmacio dashboard showing stock, proposal, and alert summaries" width="100%">
+      <br><strong>Operations dashboard</strong>
+    </td>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/inventory.png" alt="Pharmacio inventory with current quantities and low-stock warnings" width="100%">
+      <br><strong>Inventory and low-stock alerts</strong>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/document-upload.png" alt="Upload interface for pharmacy offer documents" width="100%">
+      <br><strong>Document intake</strong>
+    </td>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/offers.png" alt="List of uploaded supplier offers and their processing status" width="100%">
+      <br><strong>Offer review</strong>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/offer-comparison.png" alt="Side-by-side comparison of extracted supplier offer items" width="100%">
+      <br><strong>Offer comparison</strong>
+    </td>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/purchase-proposals.png" alt="Purchase proposal list with statuses and item counts" width="100%">
+      <br><strong>Purchase proposals</strong>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/point-of-sale.png" alt="Pharmacio point-of-sale transactions with completed and refunded sales" width="100%">
+      <br><strong>Point of sale</strong>
+    </td>
+    <td width="50%"></td>
+  </tr>
+</table>
 
 ## Technologies
 
-Django REST Framework · PostgreSQL · Redis/Celery · Flutter/Dart · FastAPI · OpenCV · EasyOCR
+| Area | Technologies |
+|---|---|
+| Web and mobile apps | Flutter, Dart |
+| Backend and API | Python, Django, Django REST Framework |
+| Database and background work | PostgreSQL, Redis, Celery |
+| OCR service | Python, FastAPI, Uvicorn, OpenCV, EasyOCR, Pandas, `pdf2image` |
+| File storage and deployment | S3-compatible storage, Boto3, Docker Compose |
 
-## Source history
+## Run the project
 
-The repositories were imported under their own directories with their commit histories retained. Exact `.env` files were removed from the imported history; example configuration files remain where provided. The source repositories are listed above for reference.
+The applications and services have separate setup requirements and configuration. Start with the guide for the component you want to run:
+
+- [Backend and API](backend/README.md)
+- [Web application](web/README.md)
+- [Mobile application](mobile/README.md)
+- [OCR service](services/ocr/README.md)
+- [AI service](services/ai/README.md)
+
+To run the integrated system, configure the backend and the selected OCR service with matching service URLs and credentials. Use the example environment files as templates; do not commit real credentials.
